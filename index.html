@@ -14,11 +14,19 @@
       line-height: 1.6;
     }
     header { 
-      background: #A6A1A1
-; 
+      background: #A6A1A1; 
       color: white; 
       text-align: center; 
-      padding: 4rem 1rem 3rem; 
+      padding: 4rem 1rem 2rem; 
+    }
+    .profile-photo {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 5px solid white;
+      margin-bottom: 1.5rem;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
     nav {
       background: #A6A1A1;
@@ -75,18 +83,19 @@
       padding: 2rem 1rem;
       margin-top: 3rem;
     }
-    .github-link {
+    .contact-link {
       display: flex;
       align-items: center;
       gap: 10px;
       color: #0d47a1;
       text-decoration: none;
       font-weight: bold;
+      margin: 0.5rem 0;
     }
-    .github-link:hover {
+    .contact-link:hover {
       text-decoration: underline;
     }
-    .github-icon {
+    .icon {
       width: 28px;
       height: 28px;
     }
@@ -102,21 +111,22 @@
   </nav>
 
   <header>
+    <img src="foto.jpg" alt="Daniel Ernesto Mira Santos" class="profile-photo">
     <h1>Daniel Ernesto Mira Santos</h1>
-    <p>Desarrollador Web | Licenciado en Computación | Juayua, El Salvador</p>
+    <p>Desarrollador Web | Licenciado en Computación | Juayúa, El Salvador</p>
   </header>
 
   <div class="container">
 
     <section id="about">
       <h2>Sobre mí</h2>
-      <p>Soy Daniel Ernesto Mira Santos, Desarrollador Web Full-Stack Licenciado en Computación Apasionado por crear soluciones digitales intuitivas, eficientes y con impacto real.</p>
+      <p>Soy Daniel Ernesto Mira Santos, Desarrollador Web Full-Stack Licenciado en Computación. Apasionado por crear soluciones digitales intuitivas, eficientes y con impacto real.</p>
       
       <p>Con una base sólida en HTML5, CSS3, JavaScript y principios de diseño responsive, estoy construyendo un portafolio sólido con proyectos prácticos que demuestran mis habilidades en frontend moderno, interacción dinámica y buenas prácticas de código limpio. Mi enfoque actual: entregar experiencias de usuario fluidas, optimizadas para móviles y con un toque personal que haga que las marcas destaquen.</p>
       
       <p>Busco mi primera oportunidad profesional como Desarrollador Web (o Junior Full-Stack) donde pueda aportar valor desde el día uno, aprender de equipos experimentados y seguir creciendo en tecnologías como React, Tailwind CSS, Node.js y más. ¡Estoy listo para contribuir en proyectos reales y transformar ideas en productos que la gente use y disfrute!</p>
       
-      <p>Desde Juayua departamento de sonsonate, El salvador, con energía salvadoreña y ganas de romperla en el mundo tech. ¿Hablamos? 🚀</p>
+      <p>Desde Juayúa, departamento de Sonsonate, El Salvador, con energía salvadoreña y ganas de romperla en el mundo tech. ¿Hablamos? 🚀</p>
     </section>
 
     <section id="skills">
@@ -139,10 +149,25 @@
       <h2>Contáctame</h2>
       <p>Estoy abierto a oportunidades como Desarrollador Web Junior o colaboraciones. ¡Escríbeme!</p>
       <ul style="list-style: none; padding: 0;">
-        <li>📧 <a href="mailto:daniel97mira@gmail.com">daniel97mira@gmail.com</a></li>
         <li>
-          <a href="https://github.com/DanielMira-Santos" target="_blank" class="github-link">
-            <svg class="github-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <a href="mailto:daniel97mira@gmail.com" class="contact-link">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            daniel97mira@gmail.com
+          </a>
+        </li>
+        <li>
+          <a href="tel:+50368220216" class="contact-link">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.02l-2.2 2.2z"/>
+            </svg>
+            +503 6822-0216
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/DanielMira-Santos" target="_blank" class="contact-link">
+            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
             </svg>
             github.com/DanielMira-Santos
@@ -154,7 +179,8 @@
   </div>
 
   <footer>
-    <p>© 2026 Daniel Ernesto Mira-Santos | Desarrollador Web | Juayua, El Salvador</p>
+    <p>© 2025 Daniel Ernesto Mira Santos | Desarrollador Web | Juayúa, El Salvador</p>
+    <p>daniel97mira@gmail.com | +503 6822-0216</p>
   </footer>
 
 </body>
