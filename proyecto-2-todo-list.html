@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto 2 - To-Do List Avanzada | Daniel Mira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --card-bg: #ffffff;
+      --text: #333;
+      --primary: #0d47a1;
+      --primary-dark: #0a3d8c;
+      --accent: #ffca28;
+      --danger: #d32f2f;
+      --success: #388e3c;
+      --gray: #757575;
+    }
+    [data-theme="dark"] {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --text: #e0e0e0;
+      --gray: #b0b0b0;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+    }
+    .container {
+      max-width: 600px;
+      margin: 4rem auto 2rem;
+      padding: 2.5rem;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      transition: background 0.4s;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 2.2rem;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--gray);
+    }
+    .input-group {
+      display: flex;
+      margin-bottom: 1.8rem;
+    }
+    input {
+      flex: 1;
+      padding: 1rem;
+      border: 2px solid var(--gray);
+      border-radius: 8px 0 0 8px;
+      font-size: 1rem;
+      background: var(--bg);
+      color: var(--text);
+    }
+    button.add-btn {
+      padding: 1rem 1.8rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    button.add-btn:hover {
+      background: var(--primary-dark);
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem;
+      background: var(--card-bg);
+      margin-bottom: 0.8rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.4s forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    li.completed {
+      opacity: 0.7;
+      text-decoration: line-through;
+      background: rgba(56,142,60,0.1);
+    }
+    .task-text {
+      flex: 1;
+      margin: 0 1rem;
+    }
+    .actions button {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      margin-left: 0.8rem;
+      transition: transform 0.2s;
+    }
+    .actions button:hover {
+      transform: scale(1.2);
+    }
+    .toggle-btn { color: var(--success); }
+    .delete-btn { color: var(--danger); }
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .filter-btn {
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background: #eee;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .stats {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+    .clear-completed {
+      display: block;
+      margin: 1.5rem auto 0;
+      padding: 0.8rem 1.5rem;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .clear-completed:hover {
+      background: #c62828;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Lista de Tareas</h1>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </header>
+
+    <div class="input-group">
+      <input type="text" id="taskInput" placeholder="¿Qué necesitas hacer hoy?" autofocus>
+      <button class="add-btn" onclick="addTask()">Agregar</button>
+    </div>
+
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTasks('all')">Todas</button>
+      <button class="filter-btn" onclick="filterTasks('pending')">Pendientes</button>
+      <button class="filter-btn" onclick="filterTasks('completed')">Completadas</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <button class="clear-completed" onclick="clearCompleted()" style="display:none;">Limpiar completadas</button>
+
+    <div class="stats">
+      Tareas pendientes: <strong id="pendingCount">0</strong> / Total: <strong id="totalCount">0</strong>
+    </div>
+  </div>
+
+  <script>
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+    const pendingCount = document.getElementById('pendingCount');
+    const totalCount = document.getElementById('totalCount');
+    const clearBtn = document.querySelector('.clear-completed');
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    let currentFilter = 'all';
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+      let pending = 0;
+      let total = tasks.length;
+
+      const filteredTasks = tasks.filter(task => {
+        if (currentFilter === 'pending') return !task.completed;
+        if (currentFilter === 'completed') return task.completed;
+        return true;
+      });
+
+      filteredTasks.forEach((task, index) => {
+        const globalIndex = tasks.indexOf(task);
+        const li = document.createElement('li');
+        li.className = task.completed ? 'completed' : '';
+        li.innerHTML = `
+          <span class="task-text">${task.text}</span>
+          <div class="actions">
+            <button class="toggle-btn" onclick="toggleTask(${globalIndex})">✓</button>
+            <button class="delete-btn" onclick="deleteTask(${globalIndex})">🗑</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+        if (!task.completed) pending++;
+      });
+
+      pendingCount.textContent = pending;
+      totalCount.textContent = total;
+      clearBtn.style.display = tasks.some(t => t.completed) ? 'block' : 'none';
+
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const text = taskInput.value.trim();
+      if (text) {
+        tasks.push({ text, completed: false });
+        taskInput.value = '';
+        renderTasks();
+      }
+    }
+
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+    }
+
+    function clearCompleted() {
+      tasks = tasks.filter(t => !t.completed);
+      renderTasks();
+    }
+
+    function filterTasks(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase().includes(filter));
+      });
+      renderTasks();
+    }
+
+    function toggleTheme() {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+    }
+
+    // Eventos
+    taskInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') addTask();
+    });
+
+    // Render inicial
+    renderTasks();
+  </script>
+
+</body>
+</html>
