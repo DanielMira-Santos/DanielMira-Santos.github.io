@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto 3 - Calculadora de Presupuesto Mensual | Daniel Mira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --primary: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --gray: #64748b;
+      --border: #e2e8f0;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --border: #334155;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      transition: all 0.5s;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    header {
+      padding: 2.5rem 3rem;
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+    }
+    .balance {
+      font-size: 3.2rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    .balance.positive { color: #a7f3d0; }
+    .balance.negative { color: #fecaca; }
+    .balance.zero { color: #fde68a; }
+    .theme-toggle {
+      background: rgba(255,255,255,0.25);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s;
+    }
+    .theme-toggle:hover {
+      background: rgba(255,255,255,0.4);
+      transform: rotate(20deg);
+    }
+    .input-section {
+      padding: 2rem 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      background: rgba(0,0,0,0.02);
+    }
+    [data-theme="dark"] .input-section {
+      background: rgba(255,255,255,0.05);
+    }
+    input, select {
+      padding: 1.1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--card);
+      color: var(--text);
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+    button.add {
+      padding: 1.1rem 2rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    button.add:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+    .entries {
+      padding: 0 3rem 2rem;
+    }
+    .entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.03);
+      transition: all 0.3s;
+      animation: fadeIn 0.4s;
+    }
+    [data-theme="dark"] .entry {
+      background: rgba(255,255,255,0.05);
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .entry.income { border-left: 6px solid var(--success); }
+    .entry.expense { border-left: 6px solid var(--danger); }
+    .entry-desc { flex: 1; font-weight: 500; }
+    .entry-amount { font-weight: 600; margin: 0 1.5rem; }
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 1.6rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .delete-btn:hover { transform: scale(1.2); }
+    .totals {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem 3rem;
+      background: rgba(0,0,0,0.02);
+      margin: 0 3rem 2rem;
+      border-radius: 16px;
+    }
+    [data-theme="dark"] .totals {
+      background: rgba(255,255,255,0.05);
+    }
+    .total-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: var(--card);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    .total-card h3 { color: var(--gray); margin-bottom: 0.5rem; }
+    .total-card .value {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .no-entries {
+      text-align: center;
+      color: var(--gray);
+      padding: 2rem;
+      font-style: italic;
+    }
+    .reset-btn {
+      display: block;
+      margin: 0 auto 2rem;
+      padding: 1rem 2.5rem;
+      background: var(--danger);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+    .reset-btn:hover { background: #c62828; transform: translateY(-2px); }
+    @media (max-width: 768px) {
+      .input-section { grid-template-columns: 1fr 1fr; }
+      .totals { grid-template-columns: 1fr; }
+      header { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Calculadora de Presupuesto</h1>
+      <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </header>
+
+    <div class="balance" id="balance">$0.00</div>
+
+    <div class="input-section">
+      <input type="text" id="description" placeholder="Descripción (ej: Sueldo, Pupusas)">
+      <input type="number" id="amount" placeholder="Monto ($)" step="0.01" min="0">
+      <select id="type">
+        <option value="income">Ingreso</option>
+        <option value="expense">Gasto</option>
+      </select>
+      <select id="category">
+        <option value="Sueldo">Sueldo</option>
+        <option value="Freelance">Freelance</option>
+        <option value="Transporte">Transporte</option>
+        <option value="Entretenimiento">Entretenimiento</option>
+        <option value="Otros">Otros</option>
+      </select>
+      <button class="add" onclick="addEntry()">Agregar</button>
+    </div>
+
+    <div class="entries">
+      <h3>Ingresos</h3>
+      <div id="incomeList">
+        <div class="no-entries">Aún no hay ingresos agregados</div>
+      </div>
+      <h3>Gastos</h3>
+      <div id="expenseList">
+        <div class="no-entries">Aún no hay gastos agregados</div>
+      </div>
+    </div>
+
+    <div class="totals">
+      <div class="total-card">
+        <h3>Total Ingresos</h3>
+        <div class="value" id="totalIncome">$0.00</div>
+      </div>
+      <div class="total-card">
+        <h3>Total Gastos</h3>
+        <div class="value" id="totalExpense">$0.00</div>
+      </div>
+      <div class="total-card">
+        <h3>Balance</h3>
+        <div class="value" id="balanceTotal">$0.00</div>
+      </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetAll()">Resetear Presupuesto</button>
+  </div>
+
+  <script>
+    let entries = JSON.parse(localStorage.getItem('budgetEntries')) || [];
+    const balanceEl = document.getElementById('balance');
+    const balanceTotalEl = document.getElementById('balanceTotal');
+    const incomeList = document.getElementById('incomeList');
+    const expenseList = document.getElementById('expenseList');
+    const totalIncomeEl = document.getElementById('totalIncome');
+    const totalExpenseEl = document.getElementById('totalExpense');
+
+    function calculateTotals() {
+      let income = 0;
+      let expense = 0;
+
+      entries.forEach(entry => {
+        const amt = parseFloat(entry.amount);
+        if (entry.type === 'income') income += amt;
+        else expense += amt;
+      });
+
+      const balance = income - expense;
+      balanceEl.textContent = `$${balance.toFixed(2)}`;
+      balanceTotalEl.textContent = `$${balance.toFixed(2)}`;
+
+      balanceEl.className = 'balance ' + (balance > 0 ? 'positive' : balance < 0 ? 'negative' : 'zero');
+      balanceTotalEl.style.color = balance > 0 ? 'var(--success)' : balance < 0 ? 'var(--danger)' : 'var(--warning)';
+
+      totalIncomeEl.textContent = `$${income.toFixed(2)}`;
+      totalExpenseEl.textContent = `$${expense.toFixed(2)}`;
+
+      localStorage.setItem('budgetEntries', JSON.stringify(entries));
+    }
+
+    function renderEntries() {
+      incomeList.innerHTML = entries.some(e => e.type === 'income') ? '' : '<div class="no-entries">Aún no hay ingresos agregados</div>';
+      expenseList.innerHTML = entries.some(e => e.type === 'expense') ? '' : '<div class="no-entries">Aún no hay gastos agregados</div>';
+
+      entries.forEach((entry, index) => {
+        const div = document.createElement('div');
+        div.className = 'entry ' + entry.type;
+        div.innerHTML = `
+          <span class="entry-desc">${entry.description} (${entry.category})</span>
+          <span class="entry-amount">${entry.type === 'income' ? '+' : '-'} $${parseFloat(entry.amount).toFixed(2)}</span>
+          <button class="delete-btn" onclick="deleteEntry(${index})">🗑</button>
+        `;
+        if (entry.type === 'income') incomeList.appendChild(div);
+        else expenseList.appendChild(div);
+      });
+    }
+
+    function addEntry() {
+      const desc = document.getElementById('description').value.trim();
+      const amt = document.getElementById('amount').value;
+      const type = document.getElementById('type').value;
+      const category = document.getElementById('category').value;
+
+      if (desc && amt && parseFloat(amt) > 0) {
+        entries.push({ description: desc, amount: amt, type, category });
+        document.getElementById('description').value = '';
+        document.getElementById('amount').value = '';
+        renderEntries();
+        calculateTotals();
+      }
+    }
+
+    function deleteEntry(index) {
+      entries.splice(index, 1);
+      renderEntries();
+      calculateTotals();
+    }
+
+    function resetAll() {
+      if (confirm('¿Seguro que quieres resetear TODO el presupuesto? Se perderán todos los datos.')) {
+        entries = [];
+        renderEntries();
+        calculateTotals();
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.body.dataset.theme;
+      document.body.dataset.theme = current === 'dark' ? '' : 'dark';
+      localStorage.setItem('budgetTheme', document.body.dataset.theme);
+    }
+
+    // Inicializar
+    renderEntries();
+    calculateTotals();
+
+    if (localStorage.getItem('budgetTheme') === 'dark') {
+      document.body.dataset.theme = 'dark';
+    }
+
+    // Agregar con Enter en monto
+    document.getElementById('amount').addEventListener('keypress', e => {
+      if (e.key === 'Enter') addEntry();
+    });
+  </script>
+
+</body>
+</html>
