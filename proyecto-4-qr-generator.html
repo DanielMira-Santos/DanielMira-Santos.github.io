@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto 4 - Generador de QR | Daniel Mira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --primary: #8b5cf6;
+      --secondary: #a78bfa;
+      --accent: #c084fc;
+      --gray: #64748b;
+      --border: #e2e8f0;
+    }
+    [data-theme="dark"] {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --border: #334155;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      transition: all 0.5s;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      padding: 3rem 2.5rem;
+      border: 1px solid var(--border);
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .input-group {
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-weight: 500;
+      color: var(--gray);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: var(--card);
+      color: var(--text);
+      transition: border 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+    .color-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .qr-preview {
+      text-align: center;
+      margin: 2.5rem 0;
+      min-height: 250px;
+    }
+    #qrImage {
+      max-width: 100%;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: all 0.4s;
+    }
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+    .generate-btn {
+      background: var(--primary);
+      color: white;
+    }
+    .generate-btn:hover { background: var(--secondary); transform: translateY(-2px); }
+    .download-btn {
+      background: var(--success);
+      color: white;
+    }
+    .download-btn:hover { background: #059669; transform: translateY(-2px); }
+    .theme-toggle {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--card);
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-style: italic;
+      color: var(--gray);
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+  <div class="container">
+    <header>
+      <h1>Generador de Códigos QR</h1>
+    </header>
+
+    <div class="input-group">
+      <label for="text">Texto o URL para el QR</label>
+      <textarea id="text" rows="3" placeholder="https://danielmira-santos.github.io o Tu mensaje aquí..." required></textarea>
+    </div>
+
+    <div class="input-group">
+      <label for="size">Tamaño del QR (px)</label>
+      <select id="size">
+        <option value="300">300 x 300</option>
+        <option value="400" selected>400 x 400</option>
+        <option value="500">500 x 500</option>
+        <option value="600">600 x 600</option>
+      </select>
+    </div>
+
+    <div class="color-group">
+      <div class="input-group">
+        <label for="fgColor">Color del código</label>
+        <input type="color" id="fgColor" value="#000000">
+      </div>
+      <div class="input-group">
+        <label for="bgColor">Color de fondo</label>
+        <input type="color" id="bgColor" value="#ffffff">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="generate-btn" onclick="generateQR()">Generar QR</button>
+      <button class="download-btn" id="downloadBtn" style="display:none;" onclick="downloadQR()">Descargar QR</button>
+    </div>
+
+    <div class="qr-preview">
+      <div id="loading" class="loading" style="display:none;">Generando código QR...</div>
+      <img id="qrImage" src="" alt="Código QR generado" style="display:none;">
+    </div>
+  </div>
+
+  <script>
+    const qrImage = document.getElementById('qrImage');
+    const loading = document.getElementById('loading');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    function generateQR() {
+      const text = document.getElementById('text').value.trim();
+      if (!text) {
+        alert('Ingresa texto o URL para generar el QR');
+        return;
+      }
+
+      loading.style.display = 'block';
+      qrImage.style.display = 'none';
+      downloadBtn.style.display = 'none';
+
+      const size = document.getElementById('size').value;
+      const fgColor = document.getElementById('fgColor').value.replace('#', '');
+      const bgColor = document.getElementById('bgColor').value.replace('#', '');
+
+      // Usamos la API gratuita de goqr.me (muy confiable y sin límite alto)
+      const url = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(text)}&size=${size}x${size}&color=${fgColor}&bgcolor=${bgColor}`;
+
+      qrImage.onload = () => {
+        loading.style.display = 'none';
+        qrImage.style.display = 'block';
+        downloadBtn.style.display = 'inline-block';
+      };
+
+      qrImage.src = url;
+    }
+
+    function downloadQR() {
+      const link = document.createElement('a');
+      link.href = qrImage.src;
+      link.download = 'qr-code-daniel-mira.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function toggleTheme() {
+      document.body.dataset.theme = document.body.dataset.theme === 'dark' ? '' : 'dark';
+      localStorage.setItem('qrTheme', document.body.dataset.theme);
+    }
+
+    if (localStorage.getItem('qrTheme') === 'dark') {
+      document.body.dataset.theme = 'dark';
+    }
+
+    // Generar con Enter en textarea
+    document.getElementById('text').addEventListener('keypress', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        generateQR();
+      }
+    });
+  </script>
+
+</body>
+</html>
