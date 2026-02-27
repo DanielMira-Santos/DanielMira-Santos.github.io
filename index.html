@@ -271,7 +271,7 @@
         <li>📧 <a href="mailto:daniel.mira.dev@gmail.com">daniel.mira.dev@gmail.com</a> (correo profesional)</li>
         <li>📱 <a href="tel:+50368220216">+503 6822-0216</a></li>
         <li>🐙 <a href="https://github.com/DanielMira-Santos" target="_blank">github.com/DanielMira-Santos</a></li>
-        <li>📄 <a href="cv.html" target="_blank">Ver mi CV completo</a></li>
+        <li>📄 <a href="curriculum.html" target="_blank">Ver mi CV completo</a></li>
       </ul>
 
       <!-- Formulario integrado -->
@@ -326,6 +326,12 @@
         message: document.getElementById('message').value,
         to_email: 'daniel.mira.dev@gmail.com'  
       };
+
+      if (!templateParams.from_name || !templateParams.from_email.includes('@') || !templateParams.message.trim()) {
+        status.textContent = 'Por favor completa todos los campos correctamente.';
+        status.style.color = 'red';
+        return;
+      }
 
       emailjs.send('service_rsvdgxa', 'template_58hmcd8', templateParams)  
         .then(() => {
